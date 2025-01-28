@@ -1,0 +1,33 @@
+OLD WAY:
+Setup autostart of Gui: https://learn.sparkfun.com/tutorials/how-to-run-a-raspberry-pi-program-on-startup/all
+
+	mkdir ~/.config/autostart
+	nano ~/.config/autostart/gui.desktop
+
+	Copy this into that file:
+
+		[Desktop Entry]
+		Type=Application
+		Name=Gui
+		Exec=/usr/bin/python3 /home/pi/app/gui.py
+
+Better way: https://medium.com/@daddycat/setting-up-raspberry-pi-to-launch-python-gui-app-without-raspbian-desktop-5022a90e5b63
+
+	sudo apt-get -y install nodm matchbox-window-manager
+	Select nodm from GUI setup
+	sudo sed -i -e "s/NODM_ENABLED=false/NODM_ENABLED=true/" -e "s/NODM_USER=root/NODM_USER=pi/" /etc/default/nodm
+	nano /home/pi/.xsession
+	
+	Copy this into that file:
+	
+		#!/usr/bin/env bashxset s off -dpms
+		exec matchbox-window-manager &
+		while true; do
+		  python3 /home/pi/app/gui.py
+		done
+	
+	
+Setting up touchscreen: https://www.waveshare.com/wiki/4inch_RPi_LCD_(A)#User_Manual
+
+	Follow instructions on website, BUT use LCD4-800x480-show instead of LCD4-show
+	

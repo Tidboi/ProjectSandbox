@@ -1,0 +1,53 @@
+GUI updates:
+
+12: Add a 2mm deadzone around the edges
+	This basically requires resizing and reorganizing everything so this would probably need to be done before anything else
+
+1: Remove title bar
+	Add line " window.wm_attributes('-fullscreen', 'True') " right before tk.mainloop()
+	
+2: Remove cursor
+	Add line " window.config(cursor="none") " after the line from issue 1
+	
+3: Remove "+" sign from temperature:
+	Unresolved, Can probably be accomplished by using .split('+')[1] to remove the plus sign
+	
+4: Temperature should only be 1 decimal place precision
+	Unresolved, the code to set current temp is only on the RPi 4, should be easy to round though
+	
+5: Increase font size of HOME and SAVE
+	Find and replace
+	
+6: Remove degrees symbol
+	Find and remove all instances of u'\xb0'
+	
+7: Add limits for bakeout screen:
+	copy logic for making sure time is greater than 0 and set max time of 999 as well as temperature range 60-80
+	default time 90 mins, default temp 80
+	
+8: Add limits for warmup screen:
+	copy logic for making sure time is greater than 0 and set max time of 999 as well as temperature range 20-40	
+	default time 90 mins, default temp 20
+	
+9: Center text inside of buttons
+	The text inside the buttons is already supposedly set to centered so this would require extra work to make them "off center"
+	
+10: "Warm up" and "Bake out" should be centered in the settings screen
+	Setting rely from 0.4 to 0.5 will accomplish this, but it looks pretty bad without adjusting everything else
+	
+11: Temperature readout should be centered on main screen
+	Setting rely from 0.4 to 0.5 will accomplish this, but it looks pretty bad without adjusting everything else
+	
+13: After pressing save, screen should blink
+	This could be done by clearing all widgets, adding a small delay and redrawing all widgets. That would be a pain.
+	An easier solution would be to change text color to green or similar
+	
+14: Temperature readout on bakeout screen is smaller than on warmup screen.
+	After making other GUI adjustmets first, make sure font sizes match between screens
+	
+15: Buttons change color when clicked:
+	Add " activeforeground='COLOR' " and " activebackground='COLOR' " into each button where the active bg color
+	matches the button color and active fg color matches the text color
+	
+16: Settings screens should happen after 5 seconds regardless of release
+	This is probably do-able by using the "after" function inside the button press callback and then checking if the button has been released within the 5 seconds or not
