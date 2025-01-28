@@ -1,0 +1,26 @@
+targetButton
+
+def warmPress(event):
+    global pressStartTime
+    global checkWarmHoldTask
+    global buttonsDisabled
+    
+    if buttonsDisabled:
+        return
+    
+    if pressStartTime == 0:
+        pressStartTime = time.time()
+        checkWarmHoldTask = window.after(3000, checkWarmHold)
+    
+def warmRelease(event):
+    global pressStartTime
+    global checkWarmHoldTask
+    global buttonsDisabled
+    
+    if buttonsDisabled:
+        return
+    
+    window.after_cancel(checkWarmHoldTask)
+    if (time.time() - pressStartTime) < 5:
+        warmUpScreen()
+    pressStartTime = 0
