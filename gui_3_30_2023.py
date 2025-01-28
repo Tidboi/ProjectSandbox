@@ -439,7 +439,7 @@ def bakeOutScreen():
     global stopUpdate
     stopUpdate = False
     
-    ser.flushInput()
+    # ser.flushInput()
     setTemp = "SETP 1, " + str(bakeTempSetting) + "\n"
     ser.write(setTemp.encode())
     time.sleep(0.05)
@@ -463,7 +463,7 @@ def warmUpScreen():
     global stopUpdate
     stopUpdate = False
     
-    ser.flushInput()
+    # ser.flushInput()
     setTemp = "SETP 1, " + str(warmTempSetting) + "\n"
     ser.write(setTemp.encode())
     time.sleep(0.05)
@@ -487,7 +487,7 @@ def targetINScreen():
     global stopUpdate
     stopUpdate = False
     
-    ser.flushInput()
+    # ser.flushInput()
     setTemp = "SETP 1, " + str(targetTempSetting) + "\n"
     ser.write(setTemp.encode())
     time.sleep(0.05)
