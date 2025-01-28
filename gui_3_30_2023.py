@@ -440,10 +440,10 @@ def bakeOutScreen():
     stopUpdate = False
     
     # ser.flushInput()
-    setTemp = "SETP 1, " + str(bakeTempSetting) + "\n"
-    ser.write(setTemp.encode())
-    time.sleep(0.05)
-    ser.write("RANGE 1, 3\n".encode())
+    # setTemp = "SETP 1, " + str(bakeTempSetting) + "\n"
+    # ser.write(setTemp.encode())
+    # time.sleep(0.05)
+    # ser.write("RANGE 1, 3\n".encode())
     
     bakeOutLabel=tk.Label(window, text="BAKE OUT", font=("Helvetica", 32))
     bakeOutLabel.place(relx=0.5,rely=0.15,anchor='center')
@@ -464,10 +464,10 @@ def warmUpScreen():
     stopUpdate = False
     
     # ser.flushInput()
-    setTemp = "SETP 1, " + str(warmTempSetting) + "\n"
-    ser.write(setTemp.encode())
-    time.sleep(0.05)
-    ser.write("RANGE 1, 3\n".encode())
+    # setTemp = "SETP 1, " + str(warmTempSetting) + "\n"
+    # ser.write(setTemp.encode())
+    # time.sleep(0.05)
+    # ser.write("RANGE 1, 3\n".encode())
     
     warmUpLabel=tk.Label(window, text="WARM UP", font=("Helvetica", 32))
     warmUpLabel.place(relx=0.5,rely=0.15,anchor='center')
@@ -488,10 +488,10 @@ def targetINScreen():
     stopUpdate = False
     
     # ser.flushInput()
-    setTemp = "SETP 1, " + str(targetTempSetting) + "\n"
-    ser.write(setTemp.encode())
-    time.sleep(0.05)
-    ser.write("RANGE 1, 3\n".encode())
+    # setTemp = "SETP 1, " + str(targetTempSetting) + "\n"
+    # ser.write(setTemp.encode())
+    # time.sleep(0.05)
+    # ser.write("RANGE 1, 3\n".encode())
     
     targetINLabel=tk.Label(window, text="TARGET IN", font=("Helvetica", 32))
     targetINLabel.place(relx=0.5,rely=0.15,anchor='center')
@@ -659,7 +659,7 @@ def mainScreen():
 
     #Target button
     targetButton=tk.Button(window, text='TARGET', height=2, width=10, bg='orange', fg='white', font=("Helvetica", 38), activeforeground='white', activebackground='orange') 
-    targetButton.place(relx=0.5,rely=0.8, anchor='center')
+    targetButton.place(relx=0.5,rely=0.2, anchor='center')
 
     targetBindPress = targetButton.bind("<ButtonPress>", targetPress)
     targetBindRelease = targetButton.bind("<ButtonRelease>", targetRelease)
