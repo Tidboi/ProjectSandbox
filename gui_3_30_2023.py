@@ -24,8 +24,8 @@ bakeTimeSetting = 120
 warmTempSetting = 20
 warmTimeSetting = 90
 
-targetTempSetting = 20
-targetTimeSetting = 90
+targetTempSetting = -140
+targetTimeSetting = 15
 
 currentTemp = 0.0
 updateTimer = 0.0
