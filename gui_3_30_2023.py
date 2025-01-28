@@ -6,18 +6,25 @@ import os
 
 saveButton = None
 homeButton = None
+
 warmButton = None
 bakeButton = None
 targetButton = None
 
 checkWarmHoldTask = None
 checkBakeHoldTask = None
+checkTargetHoldTask = None
+
 pressStartTime = 0
 heatStartTime = 0
+
 bakeTempSetting = 80
 bakeTimeSetting = 120
 warmTempSetting = 20
 warmTimeSetting = 90
+targetTempSetting = 20
+targetTimeSetting = 90
+
 currentTemp = 0.0
 updateTimer = 0.0
 stopUpdate = False
@@ -25,9 +32,10 @@ buttonsDisabled = False
 cancelTimer = False
 ser = None
 
-filepath = "/home/eet3tz/Project_Repo/dev-sandbox/Projects/"
+filepath = "/home/eet3tz/Project_Repo/dev-sandbox/ProjectSandbox/"
 bakepath = os.path.join(filepath , "bakeSettings.json")
 warmpath = os.path.join(filepath , "warmSettings.json")
+targetpath = os.path.join(filepath , "targetSettings.json")
 
 def connectSerial():
     global ser
@@ -133,9 +141,15 @@ def warmRelease(event):
         warmUpScreen()
     pressStartTime = 0
 
+def checkTargetHold():
+    global pressStartTime
+    if pressStartTime > 0:
+        pressStartTime = 0
+        targetSettingsScreen()
+
 def targetPress(event):
     global pressStartTime
-    global checktargetHoldTask
+    global checkTargetHoldTask
     global buttonsDisabled
     
     if buttonsDisabled:
@@ -143,17 +157,17 @@ def targetPress(event):
     
     if pressStartTime == 0:
         pressStartTime = time.time()
-        checktargetHoldTask = window.after(3000, checktargetHold)
+        checkTargetHoldTask = window.after(3000, checkTargetHold)
     
 def targetRelease(event):
     global pressStartTime
-    global checktargetHoldTask
+    global checkTargetHoldTask
     global buttonsDisabled
     
     if buttonsDisabled:
         return
     
-    window.after_cancel(checktargetHoldTask)
+    window.after_cancel(checkTargetHoldTask)
     if (time.time() - pressStartTime) < 5:
         targetUpScreen()
     pressStartTime = 0
@@ -223,6 +237,35 @@ def decrementWarmTime():
         warmTimeSetting = 5
     warmTimeStringVar.set(str(warmTimeSetting) + " Mins")
 
+def incrementTargetTemp():
+    global targetTempSetting
+    targetTempSetting = targetTempSetting + 1
+    if targetTempSetting > 40:
+        targetTempSetting = 40
+    targetTempStringVar.set(str(targetTempSetting)  + " C")
+
+def decrementTargetTemp():
+    global targetTempSetting
+    targetTempSetting = targetTempSetting - 1
+    if targetTempSetting < 20:
+        targetTempSetting = 20
+    targetTempStringVar.set(str(targetTempSetting)  + " C")
+    
+def incrementTargetTime():
+    global targetTimeSetting
+    targetTimeSetting = targetTimeSetting + 5
+    if targetTimeSetting > 900:
+        targetTimeSetting = 900
+    targetTimeStringVar.set(str(targetTimeSetting) + " Mins")
+
+def decrementTargetTime():
+    global targetTimeSetting
+    targetTimeSetting = targetTimeSetting - 5
+    if targetTimeSetting < 5:
+        targetTimeSetting = 5
+    targetTimeStringVar.set(str(targetTimeSetting) + " Mins")
+
+
 def saveBakeSettings():
     global saveButton
     global homeButton
@@ -273,15 +316,42 @@ def saveWarmSettings():
             i = i + 1
     #homeButton.configure(state="active")
     #saveButton.configure(state="active")
+
+def saveTargetSettings():
+    global saveButton
+    global homeButton
     
+    targetSettings = {"temp":targetTempSetting,"time":targetTimeSetting}
+    with open(targetpath, "w+") as outfile:
+        json.dump(targetSettings, outfile)
+    
+    #homeButton.configure(state="disabled")
+    #saveButton.configure(state="disabled")
+    if saveButton != None:
+        i = 0
+        for i in range(0,5):
+            saveButton.configure(bg='green')
+            saveButton.configure(activebackground='green')
+            window.update()
+            time.sleep(0.25)
+            saveButton.configure(bg='orange')
+            saveButton.configure(activebackground='orange')
+            window.update()
+            time.sleep(0.25)
+            i = i + 1
+    #homeButton.configure(state="active")
+    #saveButton.configure(state="active")   
 
 
 def update():
     global stopUpdate
     global currentTemp
     global updateTimer
+
     global warmButton
     global bakeButton
+    global targetButton
+
     global buttonsDisabled
     global cancelTimer
     
@@ -492,6 +562,49 @@ def warmSettingsScreen():
     
     decTimeButton=tk.Button(window, text="-5", height=2, width=4, font=("Helvetica",24), fg='white', bg='orange', activeforeground='white', activebackground='orange', command=decrementWarmTime)
     decTimeButton.place(relx=0.9, rely=0.85, anchor='center')
+
+
+def targetSettingsScreen():
+    clear_frame()
+    
+    global stopUpdate
+    stopUpdate = True
+    
+    global homeButton
+    homeButton=tk.Button(window, text='HOME', height=2, width=6, fg='white', bg='orange', font=("Helvetica",28), activeforeground='white', activebackground='orange', command=mainScreen)
+    homeButton.place(relx=0.12, rely=0.15, anchor='center')
+    
+    global saveButton
+    saveButton=tk.Button(window, text='SAVE', height=2, width=6, fg='white', bg='orange', font=("Helvetica",28), activeforeground='white', activebackground='orange', command=saveTargetSettings)
+    saveButton.place(relx=0.88, rely=0.15, anchor='center')
+    
+    
+    targetLabel=tk.Label(window, text="TARGET SETTINGS", font=("Helvetica", 48))
+    targetLabel.place(relx=0.5, rely=0.45, anchor='center')
+    
+    tempTextLabel=tk.Label(window, text="TEMP:", font=("Helvetica",34), fg='orange')
+    tempTextLabel.place(relx=0.12, rely=0.68, anchor='center')
+    
+    tempLabel=tk.Label(window, textvariable=targetTempStringVar, font=("Helvetica",34))
+    tempLabel.place(relx=0.3, rely=0.68, anchor='center')
+    
+    timeTextLabel=tk.Label(window, text="TIME:", font=("Helvetica",34), fg='orange')
+    timeTextLabel.place(relx=0.68,rely=0.68,anchor='center')
+    
+    timeLabel=tk.Label(window, textvariable=targetTimeStringVar, font=("Helvetica",34))
+    timeLabel.place(relx=0.88,rely=0.68,anchor='center')
+    
+    incTempButton=tk.Button(window, text="+1", height=2, width=4, font=("Helvetica",24), fg='white', bg='orange', activeforeground='white', activebackground='orange', command=incrementTargetTemp)
+    incTempButton.place(relx=0.1, rely=0.85, anchor='center')
+    
+    decTempButton=tk.Button(window, text="-1", height=2, width=4, font=("Helvetica",24), fg='white', bg='orange', activeforeground='white', activebackground='orange', command=decrementTargetTemp)
+    decTempButton.place(relx=0.3, rely=0.85, anchor='center')
+    
+    incTimeButton=tk.Button(window, text="+5", height=2, width=4, font=("Helvetica",24), fg='white', bg='orange', activeforeground='white', activebackground='orange', command=incrementTargetTime)
+    incTimeButton.place(relx=0.7, rely=0.85, anchor='center')
+    
+    decTimeButton=tk.Button(window, text="-5", height=2, width=4, font=("Helvetica",24), fg='white', bg='orange', activeforeground='white', activebackground='orange', command=decrementTargetTime)
+    decTimeButton.place(relx=0.9, rely=0.85, anchor='center')
     
 
 
@@ -501,6 +614,7 @@ def mainScreen():
     global stopUpdate
     global warmButton
     global bakeButton
+    global targetButton
     stopUpdate = False
     
     #Bake out button
@@ -518,8 +632,8 @@ def mainScreen():
     warmBindRelease = warmButton.bind("<ButtonRelease>", warmRelease)
 
     #Target button
-    targetButton=tk.Button(window, text='target UP', height=2, width=10, bg='orange', fg='white', font=("Helvetica", 38), activeforeground='white', activebackground='orange') 
-    targetButton.place(relx=0.125,rely=0.8, anchor='center')
+    targetButton=tk.Button(window, text='TARGET', height=2, width=10, bg='orange', fg='white', font=("Helvetica", 38), activeforeground='white', activebackground='orange') 
+    targetButton.place(relx=0.5,rely=0.8, anchor='center')
 
     targetBindPress = targetButton.bind("<ButtonPress>", targetPress)
     targetBindRelease = targetButton.bind("<ButtonRelease>", targetRelease)
@@ -535,8 +649,8 @@ def mainScreen():
         bakeButton.unbind("<ButtonPress>", bakeBindPress)
         bakeButton.unbind("<ButtonRelease>", bakeBindRelease)
 
-        targetButton.unbind("<ButtonPress>", bakeBindPress)
-        targetButton.unbind("<ButtonRelease>", bakeBindRelease)
+        targetButton.unbind("<ButtonPress>", targetBindPress)
+        targetButton.unbind("<ButtonRelease>", targetBindRelease)
     
     tempLabel=tk.Label(window, textvariable=tempStringVar, font=("Helvetica",96))
     tempLabel.place(relx=0.5,rely=0.5, anchor='center')
@@ -576,6 +690,12 @@ warmTempStringVar.set(str(warmTempSetting)  + " C")
 
 warmTimeStringVar = tk.StringVar()
 warmTimeStringVar.set(str(warmTimeSetting) + " Mins")
+
+targetTempStringVar = tk.StringVar()
+targetTempStringVar.set(str(targetTempSetting)  + " C")
+
+targetTimeStringVar = tk.StringVar()
+targetTimeStringVar.set(str(targetTimeSetting) + " Mins")
 
 window.title("TITLE")
 window.geometry('800x480')
