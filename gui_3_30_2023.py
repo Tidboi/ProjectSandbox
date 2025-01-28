@@ -20,8 +20,10 @@ heatStartTime = 0
 
 bakeTempSetting = 80
 bakeTimeSetting = 120
+
 warmTempSetting = 20
 warmTimeSetting = 90
+
 targetTempSetting = 20
 targetTimeSetting = 90
 
@@ -169,7 +171,7 @@ def targetRelease(event):
     
     window.after_cancel(checkTargetHoldTask)
     if (time.time() - pressStartTime) < 5:
-        targetUpScreen()
+        targetINScreen()
     pressStartTime = 0
 
 def stopHeat():
@@ -291,7 +293,6 @@ def saveBakeSettings():
     #homeButton.configure(state="active")
     #saveButton.configure(state="active")
 
-
 def saveWarmSettings():
     global saveButton
     global homeButton
@@ -373,14 +374,15 @@ def update():
                     tempStringVar.set("-- C")
                     if heatStartTime > 0:
                         cancelTimer = True
-                    if warmButton != None and bakeButton != None and buttonsDisabled == False:
+                    if warmButton != None and bakeButton != None and targetButton != None and buttonsDisabled == False:
                         buttonsDisabled = True
                 else:
                     cancelTimer = False
                     tempStringVar.set(response  + " C")
-                    if warmButton != None and bakeButton != None and buttonsDisabled == True:
+                    if warmButton != None and bakeButton != None and targetButton != None and buttonsDisabled == True:
                         warmButton.configure(state="active")
                         bakeButton.configure(state="active")
+                        targetButton.configure(state="active")
                         buttonsDisabled = False
                         mainScreen()
             except:
@@ -478,6 +480,30 @@ def warmUpScreen():
     window.after(1000, warmTimer)
     window.after(10, update)
     
+
+def targetINScreen():
+    clear_frame()
+    
+    global stopUpdate
+    stopUpdate = False
+    
+    ser.flushInput()
+    setTemp = "SETP 1, " + str(targetTempSetting) + "\n"
+    ser.write(setTemp.encode())
+    time.sleep(0.05)
+    ser.write("RANGE 1, 3\n".encode())
+    
+    targetINLabel=tk.Label(window, text="TARGET IN", font=("Helvetica", 32))
+    targetINLabel.place(relx=0.5,rely=0.15,anchor='center')
+    
+    tempLabel=tk.Label(window, textvariable=tempStringVar, fg='red', font=("Helvetica", 96))
+    tempLabel.place(relx=0.5,rely=0.5,anchor='center')
+    
+    stopButton=tk.Button(window, text='STOP', bg='red', height=2, width=8, fg='white', font=("Helvetica", 34), activeforeground='white', activebackground='red', command=stopHeat)
+    stopButton.place(relx=0.5,rely=0.80,anchor='center')
+    window.after(1000, targetTimer)
+    window.after(10, update)
+
 
 def bakeSettingsScreen():
     clear_frame()
@@ -672,6 +698,14 @@ try:
         warmTimeSetting = json_object["time"]
 except:
     saveWarmSettings()
+
+try:
+    with open(targetpath,"r") as openfile:
+        json_object = json.load(openfile)
+        targetTempSetting = json_object["temp"]
+        targetTimeSetting = json_object["time"]
+except:
+    saveTargetSettings()
 
 window=tk.Tk()
 
