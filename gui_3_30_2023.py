@@ -43,40 +43,40 @@ warmpath = os.path.join(filepath , "warmSettings.json")
 targetpath = os.path.join(filepath , "targetSettings.json")
 
 
-# Define the plant
-# Example: Simple first-order system
-plant = ct.tf([1], [1, 0.5]) 
+# # Define the plant
+# # Example: Simple first-order system
+# plant = ct.tf([1], [1, 0.5]) 
 
-# PID controller gains
-Kp = 1.0
-Ki = 0.1
-Kd = 0.01
+# # PID controller gains
+# Kp = 1.0
+# Ki = 0.1
+# Kd = 0.01
 
-# Create PID controller object
-pid = ct.pid(Kp, Ki, Kd)
+# # Create PID controller object
+# pid = ct.pid(Kp, Ki, Kd)
 
-# Simulation parameters
-dt = 0.01  # Sampling time
-simulation_time = 10.0
+# # Simulation parameters
+# dt = 0.01  # Sampling time
+# simulation_time = 10.0
 
-# Initialize variables
-t = 0.0
-y = 0.0
-u = 0.0
-error = 0.0
+# # Initialize variables
+# t = 0.0
+# y = 0.0
+# u = 0.0
+# error = 0.0
 
-# Function to read input (replace with your actual input reading method)
-def read_input():
-    """
-    Read input from user or sensor.
+# # Function to read input (replace with your actual input reading method)
+# def read_input():
+#     """
+#     Read input from user or sensor.
 
-    Returns:
-        float: Input value.
-    """
-    # Example: Get input from user
-    return float(input("Enter target value: "))
+#     Returns:
+#         float: Input value.
+#     """
+#     # Example: Get input from user
+#     return float(input("Enter target value: "))
 
-def PIDLoop():
+# def PIDLoop():
 
     # Main control loop
     while t < simulation_time:
