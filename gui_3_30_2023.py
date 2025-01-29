@@ -3,6 +3,9 @@ import time
 import json
 import serial
 import os
+import control as ct 
+
+
 
 saveButton = None
 homeButton = None
@@ -38,6 +41,68 @@ filepath = "/home/eet3tz/Project_Repo/dev-sandbox/ProjectSandbox/"
 bakepath = os.path.join(filepath , "bakeSettings.json")
 warmpath = os.path.join(filepath , "warmSettings.json")
 targetpath = os.path.join(filepath , "targetSettings.json")
+
+
+# Define the plant
+# Example: Simple first-order system
+plant = ct.tf([1], [1, 0.5]) 
+
+# PID controller gains
+Kp = 1.0
+Ki = 0.1
+Kd = 0.01
+
+# Create PID controller object
+pid = ct.pid(Kp, Ki, Kd)
+
+# Simulation parameters
+dt = 0.01  # Sampling time
+simulation_time = 10.0
+
+# Initialize variables
+t = 0.0
+y = 0.0
+u = 0.0
+error = 0.0
+
+# Function to read input (replace with your actual input reading method)
+def read_input():
+    """
+    Read input from user or sensor.
+
+    Returns:
+        float: Input value.
+    """
+    # Example: Get input from user
+    return float(input("Enter target value: "))
+
+def PIDLoop():
+
+    # Main control loop
+    while t < simulation_time:
+        # Read input from user or sensor
+        target = read_input() 
+
+        # Calculate error
+        error = target - y
+
+        # Calculate control signal
+        u, _, _ = pid(error, dt)
+
+        # Simulate plant response (replace with your actual plant update method)
+        _, y, _ = ct.forced_response(plant, T=t, U=u) 
+
+        # Apply control signal to the plant (replace with your actual actuator control)
+        # ...
+
+        # Update time
+        t += dt
+
+        # Print or log results
+        print(f"Time: {t:.2f}, Input: {target:.2f}, Output: {y:.2f}, Control: {u:.2f}")
+
+        # Introduce a small delay
+        time.sleep(dt)
 
 def connectSerial():
     global ser
@@ -486,12 +551,24 @@ def targetINScreen():
     
     global stopUpdate
     stopUpdate = False
+
+    # Command parameters
+    output_cfg = 0
+    output_type = 0
+    heat_ohms = 2
+    max_current = 0
+    max_output_current = 0.12
+    heater_display = 1
+    terminator = "\r\n"
+
+    # Construct the full command
+    command = f"HTRSET {output_cfg},{output_type},{heat_ohms},{max_current},{max_output_current},{heater_display}{terminator}"
     
     # ser.flushInput()
     # setTemp = "SETP 1, " + str(targetTempSetting) + "\n"
     # ser.write(setTemp.encode())
     # time.sleep(0.05)
-    # ser.write("RANGE 1, 3\n".encode())
+    # ser.write(command.encode())
     
     targetINLabel=tk.Label(window, text="TARGET IN", font=("Helvetica", 32))
     targetINLabel.place(relx=0.5,rely=0.15,anchor='center')
