@@ -3,7 +3,7 @@ import time
 import json
 import serial
 import os
-import control as ct 
+
 
 saveButton = None
 homeButton = None
@@ -36,6 +36,8 @@ cancelTimer = False
 ser = None
 
 filepath = "/home/pi/app/"
+
+#json file paths
 bakepath = os.path.join(filepath , "bakeSettings.json")
 warmpath = os.path.join(filepath , "warmSettings.json")
 targetpath = os.path.join(filepath , "targetSettings.json")
@@ -244,15 +246,15 @@ def decrementWarmTime():
 def incrementTargetTemp():
     global targetTempSetting
     targetTempSetting = targetTempSetting + 1
-    if targetTempSetting > 40:
-        targetTempSetting = 40
+    if targetTempSetting > 20:
+        targetTempSetting = 20
     targetTempStringVar.set(str(targetTempSetting)  + " C")
 
 def decrementTargetTemp():
     global targetTempSetting
     targetTempSetting = targetTempSetting - 1
-    if targetTempSetting < 20:
-        targetTempSetting = 20
+    if targetTempSetting < -175:
+        targetTempSetting = -175
     targetTempStringVar.set(str(targetTempSetting)  + " C")
     
 def incrementTargetTime():
@@ -619,7 +621,7 @@ def targetSettingsScreen():
     saveButton.place(relx=0.88, rely=0.15, anchor='center')
     
     
-    targetLabel=tk.Label(window, text="TARGET SETTINGS", font=("Helvetica", 48))
+    targetLabel=tk.Label(window, text="TARGET", font=("Helvetica", 48))
     targetLabel.place(relx=0.5, rely=0.45, anchor='center')
     
     tempTextLabel=tk.Label(window, text="TEMP:", font=("Helvetica",34), fg='orange')
