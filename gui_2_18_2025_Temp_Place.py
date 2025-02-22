@@ -35,9 +35,7 @@ buttonsDisabled = False
 cancelTimer = False
 ser = None
 
-# filepath = "/home/pi/app/" - Reenable
-
-filepath = "/home/eet3tz/Project_Repo/dev-sandbox/ProjectSandbox/"
+filepath = "/home/pi/app/"
 
 #json file paths
 bakepath = os.path.join(filepath , "bakeSettings.json")
@@ -186,7 +184,7 @@ def stopHeat():
     
     ser.write("RANGE 1, 0\n".encode())
     
-    #clear_frame()
+    clear_frame()
     mainScreen()
     
 def incrementBakeTemp():
@@ -394,6 +392,7 @@ def update():
             except:
                 print("Error")
                 
+                
             updateTimer = 0
     #window.update()
     window.after(10, update)
@@ -437,6 +436,26 @@ def warmTimer():
         stopHeat()
         return
     window.after(1000, warmTimer)
+
+def targetTimer():
+    global currentTemp
+    global targetTempSetting
+    global targetTimeSetting
+    global heatStartTime
+    global cancelTimer
+    
+    if cancelTimer == True:
+        heatStartTime = 0
+        stopHeat()
+        return
+    
+    if heatStartTime == 0:
+        heatStartTime = time.time()
+    elif ((time.time() - heatStartTime) / 60) >= targetTimeSetting:
+        heatStartTime = 0
+        stopHeat()
+        return
+    window.after(1000, targetTimer)
     
 
 def bakeOutScreen():
@@ -445,33 +464,33 @@ def bakeOutScreen():
     global stopUpdate
     stopUpdate = False
     
-    # ser.flushInput()
-    # time.sleep(0.05)
-    # ser.write("INTYPE A, 1, 0, 0, 0, 2\n".encode())
-    # time.sleep(0.05)
-    # ser.write("INCRV A, 02\n".encode())
-    # time.sleep(0.05)
-    # ser.write("FILTER A, 1, 8, 1\n".encode())
-    # time.sleep(0.05)
-    # ser.write("TLIMIT A, 373\n".encode())
-    # time.sleep(0.05)
-    # ser.write("OUTMODE 1, 1, 1, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("PID 1, 50, 20, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("RAMP 1, 0, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("HTRSET 1, 0, 2, 0, 0.4, 1\n".encode())
-    # time.sleep(0.05)
-    # ser.write("RANGE 1, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("MOUT 1, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.flushInput()
-    # setTemp = "SETP 1, " + str(bakeTempSetting) + "\n"
-    # ser.write(setTemp.encode())
-    # time.sleep(0.05)
-    # ser.write("RANGE 1, 3\n".encode())
+    ser.flushInput()
+    time.sleep(0.05)
+    ser.write("INTYPE A, 1, 0, 0, 0, 2\n".encode())
+    time.sleep(0.05)
+    ser.write("INCRV A, 02\n".encode())
+    time.sleep(0.05)
+    ser.write("FILTER A, 1, 8, 1\n".encode())
+    time.sleep(0.05)
+    ser.write("TLIMIT A, 373\n".encode())
+    time.sleep(0.05)
+    ser.write("OUTMODE 1, 1, 1, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("PID 1, 50, 20, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("RAMP 1, 0, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("HTRSET 1, 0, 2, 0, 0.4, 1\n".encode())
+    time.sleep(0.05)
+    ser.write("RANGE 1, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("MOUT 1, 0\n".encode())
+    time.sleep(0.05)
+    ser.flushInput()
+    setTemp = "SETP 1, " + str(bakeTempSetting) + "\n"
+    ser.write(setTemp.encode())
+    time.sleep(0.05)
+    ser.write("RANGE 1, 3\n".encode())
     
     bakeOutLabel=tk.Label(window, text="BAKE OUT", font=("Helvetica", 32))
     bakeOutLabel.place(relx=0.5,rely=0.15,anchor='center')
@@ -491,33 +510,33 @@ def warmUpScreen():
     global stopUpdate
     stopUpdate = False
     
-    # ser.flushInput() - enable
-    # time.sleep(0.05)
-    # ser.write("INTYPE A, 1, 0, 0, 0, 2\n".encode())
-    # time.sleep(0.05)
-    # ser.write("INCRV A, 02\n".encode())
-    # time.sleep(0.05)
-    # ser.write("FILTER A, 1, 8, 1\n".encode())
-    # time.sleep(0.05)
-    # ser.write("TLIMIT A, 373\n".encode())
-    # time.sleep(0.05)
-    # ser.write("OUTMODE 1, 1, 1, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("PID 1, 50, 20, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("RAMP 1, 0, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("HTRSET 1, 0, 2, 0, 0.4, 1\n".encode())
-    # time.sleep(0.05)
-    # ser.write("RANGE 1, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("MOUT 1, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.flushInput()
-    # setTemp = "SETP 1, " + str(warmTempSetting) + "\n"
-    # ser.write(setTemp.encode())
-    # time.sleep(0.05)
-    # ser.write("RANGE 1, 3\n".encode())
+    ser.flushInput() - enable
+    time.sleep(0.05)
+    ser.write("INTYPE A, 1, 0, 0, 0, 2\n".encode())
+    time.sleep(0.05)
+    ser.write("INCRV A, 02\n".encode())
+    time.sleep(0.05)
+    ser.write("FILTER A, 1, 8, 1\n".encode())
+    time.sleep(0.05)
+    ser.write("TLIMIT A, 373\n".encode())
+    time.sleep(0.05)
+    ser.write("OUTMODE 1, 1, 1, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("PID 1, 50, 20, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("RAMP 1, 0, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("HTRSET 1, 0, 2, 0, 0.4, 1\n".encode())
+    time.sleep(0.05)
+    ser.write("RANGE 1, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("MOUT 1, 0\n".encode())
+    time.sleep(0.05)
+    ser.flushInput()
+    setTemp = "SETP 1, " + str(warmTempSetting) + "\n"
+    ser.write(setTemp.encode())
+    time.sleep(0.05)
+    ser.write("RANGE 1, 3\n".encode())
     
     warmUpLabel=tk.Label(window, text="WARM UP", font=("Helvetica", 32))
     warmUpLabel.place(relx=0.5,rely=0.15,anchor='center')
@@ -549,25 +568,25 @@ def targetINScreen():
     # Construct the full command
     command = f"HTRSET {output_cfg},{output_type},{heat_ohms},{max_current},{max_output_current},{heater_display}{terminator}"
     
-    # ser.flushInput() - Reenable
-    # time.sleep(0.05)
-    # ser.write("OUTMODE 2, 1, 1, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("PID 2, 50, 20, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("RAMP 2, 0, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("RANGE 2, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.write("MOUT 2, 0\n".encode())
-    # time.sleep(0.05)
-    # ser.flushInput()
-    # setTemp = "SETP 2, " + str(targetTempSetting) + "\n"
-    # ser.write(setTemp.encode())
-    # time.sleep(0.05)
-    # ser.write(command.encode())
-    # time.sleep(0.05)
-    # ser.write("RANGE 2, 1\n".encode())
+    ser.flushInput() - Reenable
+    time.sleep(0.05)
+    ser.write("OUTMODE 2, 1, 1, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("PID 2, 50, 20, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("RAMP 2, 0, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("RANGE 2, 0\n".encode())
+    time.sleep(0.05)
+    ser.write("MOUT 2, 0\n".encode())
+    time.sleep(0.05)
+    ser.flushInput()
+    setTemp = "SETP 2, " + str(targetTempSetting) + "\n"
+    ser.write(setTemp.encode())
+    time.sleep(0.05)
+    ser.write(command.encode())
+    time.sleep(0.05)
+    ser.write("RANGE 2, 1\n".encode())
     
     targetINLabel=tk.Label(window, text="TARGET IN", font=("Helvetica", 32))
     targetINLabel.place(relx=0.5,rely=0.15,anchor='center')
@@ -810,8 +829,8 @@ targetTimeStringVar.set(str(targetTimeSetting) + " Mins")
 window.title("TITLE")
 window.geometry('800x480')
 
-# connectSerial()
-# ser.flushInput() 
+connectSerial()
+ser.flushInput() 
 
 mainScreen()
 
